@@ -257,12 +257,19 @@
                     setStatus('Room not found!', '#ff6f61');
                     return;
                 }
+                // If O is not present, join as O
                 if (!data.players.O) {
                     playerSymbol = 'O';
                     db.ref('rooms/' + roomId + '/players/O').set(true);
                 } else if (data.players.X && data.players.O) {
-                    setStatus('Room full!', '#ff6f61');
-                    return;
+                    // If both X and O are present, check if you are already X or O
+                    // For demo, allow rejoin as X (first player) if you are the creator
+                    if (isRoomCreator) {
+                        playerSymbol = 'X';
+                    } else {
+                        setStatus('Room full!', '#ff6f61');
+                        return;
+                    }
                 } else {
                     playerSymbol = 'X';
                 }
